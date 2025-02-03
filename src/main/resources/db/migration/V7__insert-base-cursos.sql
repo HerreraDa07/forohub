@@ -1,0 +1,1 @@
+insert into cursos (nombre, categoria) values ('Programación Orientada a Objetos', 'C'), ('Estructuras de Control', 'C_SHARP'), ('Desarrollo Móvil', 'JAVA'), ('Desarrollo Web', 'JAVA_SCRIPT'), ('Inteligencia Artificial', 'PYTHON'), ('Consultas Avanzadas', 'SQL');
