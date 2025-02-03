@@ -15,6 +15,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 
 @Component
+@SuppressWarnings("unused")
 public class SeguridadFiltro extends OncePerRequestFilter {
     @Autowired
     RepositorioUsuario repositorioUsuario;

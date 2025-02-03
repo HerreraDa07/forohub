@@ -16,6 +16,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
+@SuppressWarnings("unused")
 public class SeguridadConfiguracion {
     @Autowired
     private SeguridadFiltro seguridadFiltro;
@@ -23,6 +24,7 @@ public class SeguridadConfiguracion {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity.csrf(c -> c.disable()).sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS)).authorizeHttpRequests(r -> {
+            r.requestMatchers(HttpMethod.GET, "/swagger-ui.html", "/v3/api-docs/**", "/swagger-ui/**").permitAll();
             r.requestMatchers(HttpMethod.POST, "/acceso", "/registro").permitAll();
             r.anyRequest().authenticated();
         }).addFilterBefore(seguridadFiltro, UsernamePasswordAuthenticationFilter.class).build();

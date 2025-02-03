@@ -6,6 +6,8 @@ import com.forohub.forohub.dominio.usuario.UsuarioListadoDto;
 import com.forohub.forohub.dominio.usuario.UsuarioRespuestaDto;
 import com.forohub.forohub.repositorio.RepositorioUsuario;
 import com.forohub.forohub.seguridad.encriptador.Encriptador;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +21,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/usuario")
 @SuppressWarnings("unused")
+@Tag(name = "Usuario", description = "Operaciones relacionadas con el usuario")
 public class ControladorUsuario {
     @Autowired
     private RepositorioUsuario repositorioUsuario;
@@ -26,12 +29,14 @@ public class ControladorUsuario {
     Encriptador encriptador;
 
     @GetMapping
+    @Operation(summary = "Listado de usuarios", description = "Hace un listado con los usuarios registrados en la base de datos")
     public ResponseEntity<Page<UsuarioListadoDto>> listado(Pageable pageable) {
         return ResponseEntity.ok(repositorioUsuario.findAll(pageable).map(UsuarioListadoDto::new));
     }
 
     @PutMapping
     @Transactional
+    @Operation(summary = "Actualizar usuario", description = "Actualiza los datos de un usuario en la base de datos")
     public ResponseEntity<UsuarioRespuestaDto> actualizar(@RequestBody @Valid UsuarioActualizarDto usuarioActualizarDto) {
         Optional<Usuario> optionalUsuario = repositorioUsuario.findById(usuarioActualizarDto.id());
         if (optionalUsuario.isPresent()) {
@@ -45,6 +50,7 @@ public class ControladorUsuario {
 
     @DeleteMapping("/{id}")
     @Transactional
+    @Operation(summary = "Eliminar usuario", description = "Elimina un usuario de la base de datos")
     public ResponseEntity<Void> eliminar(@PathVariable Long id) {
         Optional<Usuario> optionalUsuario = repositorioUsuario.findById(id);
         if (optionalUsuario.isPresent()) {

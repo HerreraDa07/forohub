@@ -10,6 +10,8 @@ import com.forohub.forohub.repositorio.RepositorioRespuesta;
 import com.forohub.forohub.repositorio.RepositorioTopico;
 import com.forohub.forohub.repositorio.RepositorioUsuario;
 import com.forohub.forohub.seguridad.autenticacion.ServicioToken;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +27,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/respuestas")
 @SuppressWarnings("unused")
+@Tag(name = "Respuestas", description = "Operaciones relacionadas con las respuestas")
 public class ControladorRespuesta {
     @Autowired
     RepositorioRespuesta repositorioRespuesta;
@@ -36,11 +39,13 @@ public class ControladorRespuesta {
     RepositorioUsuario repositorioUsuario;
 
     @GetMapping
+    @Operation(summary = "Listado de respuestas", description = "Hace un listado con las respuestas registradas en la base de datos")
     public ResponseEntity<Page<RespuestaListadoDto>> listado(Pageable pageable) {
         return ResponseEntity.ok(repositorioRespuesta.findAll(pageable).map(RespuestaListadoDto::new));
     }
 
     @GetMapping("/{id}")
+    @Operation(summary = "Datos respuesta", description = "Trae los datos de una respuesta registrada en la base de datos")
     public ResponseEntity<RespuestaRespuestaDto> respuesta(@PathVariable Long id) {
         Respuesta respuesta = repositorioRespuesta.getReferenceById(id);
         Topico topico = respuesta.getTopico();
@@ -49,6 +54,7 @@ public class ControladorRespuesta {
     }
 
     @PostMapping
+    @Operation(summary = "Registrar respuesta", description = "Registra los datos de una respuesta en la base de datos")
     public ResponseEntity<RespuestaRespuestaDto> registro(@RequestBody @Valid RespuestaRegistroDto respuestaRegistroDto, UriComponentsBuilder uriComponentsBuilder, @RequestHeader("Authorization") String autorizacion) {
         String token = autorizacion.replace("Bearer ", "");
         String correo = servicioToken.obtenerCorreo(token);
@@ -62,6 +68,7 @@ public class ControladorRespuesta {
 
     @PutMapping
     @Transactional
+    @Operation(summary = "Actualizar respuesta", description = "Actualiza los datos de una respuesta en la base de datos")
     public ResponseEntity<RespuestaRespuestaDto> actualizar(@RequestBody @Valid RespuestaActualizarDto respuestaActualizarDto) {
         Optional<Respuesta> optionalRespuesta = repositorioRespuesta.findById(respuestaActualizarDto.id());
         if ((optionalRespuesta.isPresent())) {
@@ -76,6 +83,7 @@ public class ControladorRespuesta {
 
     @DeleteMapping("/{id}")
     @Transactional
+    @Operation(summary = "Eliminar respuesta", description = "Elimina una respuesta de la base de datos")
     public ResponseEntity<Void> eliminar(@PathVariable Long id) {
         Optional<Respuesta> optionalRespuesta = repositorioRespuesta.findById(id);
         if (optionalRespuesta.isPresent()) {
