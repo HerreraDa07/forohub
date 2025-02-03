@@ -17,20 +17,35 @@ documentacion fue hecha con Spring Doc.`**
 1. Para empezar a usar la API, se debe crear un usuario en el endpoint de Registro. El usuario debe incluir un nombre,
    un
    correo electrónico y una
-   clave. ![](docs/Captura4.png)
+   clave.
+
+![](docs/Captura4.png)
+
 2. Luego debe ingresar el correo electrónico y la clave que utilizó en el registro en el endpoint de
-   acceso. ![](docs/Captura5.png) Si el usuario es autenticado, recibirá un JWT (Json Web Token) con el que podrá hacer
-   las
-   request en los endpoints que soliciten autenticación. ![](docs/Captura6.png)
+   acceso.
+
+![](docs/Captura5.png)
+
+Si el usuario es autenticado, recibirá un JWT (Json Web Token) con el que podrá hacer
+las
+request en los endpoints que soliciten autenticación.
+
+![](docs/Captura6.png)
+
 3. El JWT es necesario para varios endpoints. Por lo que debe ingresarse en los Request para que funcionen.
-   correctamente. <img src= "docs/Captura7.png" alt= "Captura de pantalla del boton de Authorize" width= 45%> <img src= "docs/Captura8.png" alt= "Captura de pantalla del boton de Authorize" width= 45%>
+   correctamente.
+
+![](docs/Captura7.png) ![](docs/Captura8.png)
+
 4. El bloque de tópicos tiene los endpoints para:
 
 - Crear un nuevo tópico.
 - Actualizar los datos de un tópico.
 - Listar los tópicos creados.
 - Ver todos los datos de un tópico.
-- Eliminar un tópico. ![](docs/Captura2.png)
+- Eliminar un tópico.
+
+![](docs/Captura2.png)
 
 5. El bloque de Respuestas tiene los endpoints para:
 
@@ -38,13 +53,17 @@ documentacion fue hecha con Spring Doc.`**
 - Actualizar los datos de una respuesta.
 - Listar las respuestas creadas.
 - Ver todos los datos de una respuesta.
-- Eliminar una respuesta. ![](docs/Captura3.png)
+- Eliminar una respuesta.
+
+![](docs/Captura3.png)
 
 6. El bloque de usuario tiene los endpoints para:
 
 - Actualizar los datos de un usuario.
 - Listar los usuarios registrados.
-- Eliminar un usuario. ![](docs/Captura1.png)
+- Eliminar un usuario.
+
+![](docs/Captura1.png)
 
 ### Uso
 
