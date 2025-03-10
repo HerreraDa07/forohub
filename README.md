@@ -26,7 +26,7 @@ documentacion fue hecha con Spring Doc.`**
 
 ![](docs/Captura5.png)
 
-Si el usuario es autenticado, recibirá un JWT (Json Web Token) con el que podrá hacer
+Si el usuario es autenticado, recibirá un JWT (JSON Web Token) con el que podrá hacer
 las
 request en los endpoints que soliciten autenticación.
 

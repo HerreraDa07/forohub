@@ -1,10 +1,12 @@
 package com.forohub.forohub.controlador;
 
+import com.forohub.forohub.dominio.autor.AutorDto;
 import com.forohub.forohub.dominio.usuario.Usuario;
 import com.forohub.forohub.dominio.usuario.UsuarioActualizarDto;
 import com.forohub.forohub.dominio.usuario.UsuarioListadoDto;
 import com.forohub.forohub.dominio.usuario.UsuarioRespuestaDto;
 import com.forohub.forohub.repositorio.RepositorioUsuario;
+import com.forohub.forohub.seguridad.autenticacion.ServicioToken;
 import com.forohub.forohub.seguridad.encriptador.Encriptador;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -27,11 +29,22 @@ public class ControladorUsuario {
     private RepositorioUsuario repositorioUsuario;
     @Autowired
     Encriptador encriptador;
+    @Autowired
+    ServicioToken servicioToken;
 
     @GetMapping
     @Operation(summary = "Listado de usuarios", description = "Hace un listado con los usuarios registrados en la base de datos")
     public ResponseEntity<Page<UsuarioListadoDto>> listado(Pageable pageable) {
         return ResponseEntity.ok(repositorioUsuario.findAll(pageable).map(UsuarioListadoDto::new));
+    }
+
+    @GetMapping("/obtener")
+    public ResponseEntity<AutorDto> obtenerUsuario(@RequestHeader("Authorization") String jwt) {
+        String token = jwt.replace("Bearer ", "");
+        String correo = servicioToken.obtenerCorreo(token);
+        Usuario usuario = (Usuario) repositorioUsuario.findByCorreo(correo);
+        AutorDto autor = new AutorDto(usuario.getNombre(), usuario.getCorreo());
+        return ResponseEntity.ok(autor);
     }
 
     @PutMapping

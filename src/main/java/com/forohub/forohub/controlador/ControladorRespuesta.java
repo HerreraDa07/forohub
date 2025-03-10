@@ -5,6 +5,7 @@ import com.forohub.forohub.dominio.curso.CursoDto;
 import com.forohub.forohub.dominio.respuesta.*;
 import com.forohub.forohub.dominio.topico.Topico;
 import com.forohub.forohub.dominio.topico.TopicoRespuestaDto;
+import com.forohub.forohub.dominio.topico.TopicoUsuarioDto;
 import com.forohub.forohub.dominio.usuario.Usuario;
 import com.forohub.forohub.repositorio.RepositorioRespuesta;
 import com.forohub.forohub.repositorio.RepositorioTopico;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -51,6 +53,13 @@ public class ControladorRespuesta {
         Topico topico = respuesta.getTopico();
         var datos = new RespuestaRespuestaDto(respuesta.getId(), respuesta.getMensaje(), new TopicoRespuestaDto(topico.getTitulo(), topico.getMensaje(), topico.getFecha(), topico.getEstatus(), new AutorDto(topico.getAutor().getNombre(), topico.getAutor().getCorreo()), new CursoDto(topico.getCurso().getNombre(), topico.getCurso().getCategoria())), respuesta.getFecha(), new AutorDto(respuesta.getAutor().getNombre(), respuesta.getAutor().getCorreo()), respuesta.getSolucion());
         return ResponseEntity.ok(datos);
+    }
+
+    @GetMapping("/usuario/{usuario}")
+    public ResponseEntity<List<RespuestaUsuarioDto>> respuestas(@PathVariable @Valid String usuario) {
+        List<Respuesta> respuestas = repositorioRespuesta.findByAutorNombre(usuario);
+        List<RespuestaUsuarioDto> respuestaUsuarioDto = respuestas.stream().map(r -> new RespuestaUsuarioDto(r.getId(), r.getMensaje(), r.getSolucion(), r.getFecha(), new TopicoUsuarioDto(r.getTopico().getTitulo(), r.getTopico().getMensaje(), new AutorDto(r.getTopico().getAutor().getNombre(), r.getTopico().getAutor().getCorreo())))).toList();
+        return ResponseEntity.ok(respuestaUsuarioDto);
     }
 
     @PostMapping

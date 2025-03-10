@@ -1,11 +1,15 @@
 package com.forohub.forohub.controlador;
 
+import com.forohub.forohub.dominio.autor.Autor;
 import com.forohub.forohub.dominio.autor.AutorDto;
 import com.forohub.forohub.dominio.curso.Curso;
 import com.forohub.forohub.dominio.curso.CursoDto;
+import com.forohub.forohub.dominio.respuesta.Respuesta;
+import com.forohub.forohub.dominio.respuesta.RespuestaTopicoDto;
 import com.forohub.forohub.dominio.topico.*;
 import com.forohub.forohub.dominio.usuario.Usuario;
 import com.forohub.forohub.repositorio.RepositorioCurso;
+import com.forohub.forohub.repositorio.RepositorioRespuesta;
 import com.forohub.forohub.repositorio.RepositorioTopico;
 import com.forohub.forohub.repositorio.RepositorioUsuario;
 import com.forohub.forohub.seguridad.autenticacion.ServicioToken;
@@ -15,6 +19,7 @@ import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -23,6 +28,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -37,20 +43,25 @@ public class ControladorTopico {
     @Autowired
     RepositorioCurso repositorioCurso;
     @Autowired
+    RepositorioRespuesta repositorioRespuesta;
+    @Autowired
     ServicioToken servicioToken;
 
     @GetMapping
     @Operation(summary = "Listado de tópicos", description = "Hace un listado con los tópicos registrados en la base de datos")
-    public ResponseEntity<Page<TopicoListadoDto>> listado(@PageableDefault(size = 5, sort = "fecha", direction = Sort.Direction.DESC) Pageable pageable) {
+    public ResponseEntity<Page<TopicoListadoDto>> listado(@PageableDefault(size = 20, sort = "fecha", direction = Sort.Direction.DESC) Pageable pageable) {
         return ResponseEntity.ok(repositorioTopico.findAll(pageable).map(TopicoListadoDto::new));
     }
 
     @GetMapping("/{id}")
     @Operation(summary = "Datos tópico", description = "Trae los datos de un tópico registrado en la base de datos")
-    public ResponseEntity<TopicoRespuestaDto> topico(@PathVariable Long id) {
+    public ResponseEntity<Object> topico(@PathVariable Long id) {
         Topico topico = repositorioTopico.getReferenceById(id);
         var datos = new TopicoRespuestaDto(topico.getTitulo(), topico.getMensaje(), topico.getFecha(), topico.getEstatus(), new AutorDto(topico.getAutor().getNombre(), topico.getAutor().getCorreo()), new CursoDto(topico.getCurso().getNombre(), topico.getCurso().getCategoria()));
-        return ResponseEntity.ok(datos);
+        Pageable pageable = PageRequest.of(0, 10);
+        List<Respuesta> respuestas = repositorioRespuesta.findByIdTopico(id, pageable);
+        List<RespuestaTopicoDto> dato2 = respuestas.stream().map(r -> new RespuestaTopicoDto(r.getId(), r.getMensaje(), r.getFecha(), new Autor(r.getAutor().getNombre(), r.getAutor().getCorreo()), r.getSolucion())).toList();
+        return ResponseEntity.ok(List.of(datos, dato2));
     }
 
     @PostMapping
